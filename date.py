@@ -24,7 +24,7 @@ def delete_old_folders(base_path):
                 folder_path = os.path.join(base_path, folder_name)
                 if os.path.isdir(folder_path):
                     shutil.rmtree(folder_path)
-                    print(f"Deleting folder: {folder_path}")
+                    logger.debug(f"Deleting folder: {folder_path}")
         except ValueError:
             pass
 
@@ -41,7 +41,7 @@ def get_names_folders(path_root_folder):
     start_time = f"{current_minute:02d}" 
     end_time = f"{end_minute:02d}" 
  
-    minute_folder = f'{time_folder}/{start_time}_{end_time}' 
+    minute_folder = f'{time_folder}/{start_time}-{end_time}' 
  
     return date_folder, time_folder, minute_folder, end_time
 
@@ -68,10 +68,10 @@ def main(opt):
     fourcc = cv2.VideoWriter_fourcc('m', 'p', '4', 'v')
     out = cv2.VideoWriter(output_file, fourcc, fps, (frame_width, frame_height))
 
-
+    logger.info("Recording video")
     while True:
         if not cap.isOpened():
-            print("Не удалось открыть камеру.")
+            logger.debug("Не удалось открыть камеру.")
             cap = cv2.VideoCapture(cameras_url[opt.camera - 1])
             
         
