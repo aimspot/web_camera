@@ -72,6 +72,11 @@ def main(opt):
     while True:
         if not cap.isOpened():
             logger.debug("Не удалось открыть камеру.")
+            try:
+                with open(f'DISCONECT camera №{opt.camera}.txt', "w") as file:
+                    file.write("")
+            except Exception as e:
+                pass
             cap = cv2.VideoCapture(cameras_url[opt.camera - 1])
             
         
