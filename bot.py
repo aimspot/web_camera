@@ -127,6 +127,7 @@ def handle_button_click(call):
 
 def send_mp4(call, mp4_path):
     chat_id = call.message.chat.id
+    bot.send_message(chat_id, f'Wait for a few minutes you will be sent a video clip: {mp4_path.split("/")[-1]}')
     try:
         video_paths = split_video(mp4_path, "output_parts")
         print(video_paths)
