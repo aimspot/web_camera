@@ -1,7 +1,8 @@
 import telebot
 from telebot import types
-from data import get_all_folders_in_directory, find_folders_in_current_directory, get_all_files_in_directory
+from data import get_all_folders_in_directory, find_folders_in_current_directory, get_all_files_in_directory, split_video
 import os
+import shutil
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
@@ -21,7 +22,7 @@ target_callback_hour = ['hour1_pressed', 'hour2_pressed', 'hour3_pressed', 'hour
 
 target_callback_video = ['video1_pressed', 'video2_pressed', 'video3_pressed', 'video4_pressed', 'video5_pressed', 'video6_pressed', 'video7_pressed', 'video8_pressed', 'video9_pressed', 'video10_pressed', 'video11_pressed', 'video12_pressed']
 
-bot = telebot.TeleBot('YOUR TOKEN')
+bot = telebot.TeleBot('YOUT TOKEN')
 
 users = []
 
@@ -85,22 +86,34 @@ def handle_button_click(call):
     global folders_date
     global folders_hour
     global files_path
+    user_id = call.message.chat.id
+    if user_id not in users:
+        users.append(user_id)
     if call.data == 'camera1_pressed':
-        folder_path = find_folders_in_current_directory([target_folder_camera[0]])[0]
-        folders_date = get_all_folders_in_directory(folder_path)
-        create_buttons_date(folders_date, call)
-        #bot.send_message(call.message.chat.id, "Вы нажали кнопку 1!")
+        try:
+            folder_path = find_folders_in_current_directory([target_folder_camera[0]])[0]
+            folders_date = get_all_folders_in_directory(folder_path)
+            create_buttons_date(folders_date, call)
+        except:
+            bot.send_message(call.message.chat.id, "Currently there are no suitable directories or the camera is not running")
 
     elif call.data == 'camera2_pressed':
-        folder_path = find_folders_in_current_directory([target_folder_camera[1]])[0]
-        folders_date = get_all_folders_in_directory(folder_path)
-        create_buttons_date(folders_date, call)
+        try:
+            folder_path = find_folders_in_current_directory([target_folder_camera[1]])[0]
+            folders_date = get_all_folders_in_directory(folder_path)
+            create_buttons_date(folders_date, call)
+        except:
+            bot.send_message(call.message.chat.id, "Currently there are no suitable directories or the camera is not running")
 
     for i, command in enumerate(target_callback_date):
         if command == call.data:
-            folders_hour = get_all_folders_in_directory(folders_date[i])
-            # print(folders_hour)
-            create_buttons_hour(folders_hour, call)
+            try:
+                folders_hour = get_all_folders_in_directory(folders_date[i])
+                # print(folders_hour)
+                create_buttons_hour(folders_hour, call)
+            except:
+                bot.send_message(call.message.chat.id, "Currently there are no suitable directories")
+
 
     for i, command in enumerate(target_callback_hour):
         if command == call.data:
@@ -114,11 +127,19 @@ def handle_button_click(call):
 
 def send_mp4(call, mp4_path):
     chat_id = call.message.chat.id
-    if os.path.exists(mp4_path):
-        with open(mp4_path, 'rb') as video:
-            bot.send_video(chat_id, video)
-    else:
-        bot.send_message(chat_id, "MP4 file not found.")
+    try:
+        video_paths = split_video(mp4_path, "output_parts")
+        print(video_paths)
+        for video in video_paths:
+            if os.path.exists(video):
+                with open(video, 'rb') as part_video:
+                    bot.send_video(chat_id, part_video)
+            else:
+                bot.send_message(chat_id, "MP4 file not found.")
+        shutil.rmtree("output_parts")
+    except:
+        bot.send_message(chat_id, "Try later, video in process recording.")
+
 
 
 def create_buttons_date(folders_date, call):

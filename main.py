@@ -59,7 +59,8 @@ def main(opt):
     create_directory(date_folder)
     create_directory(time_folder)
 
-    cap = cv2.VideoCapture(cameras_url[opt.camera - 1])
+    #cap = cv2.VideoCapture(cameras_url[opt.camera - 1])
+    cap = cv2.VideoCapture(0)
 
     frame_width = 1920#int(cap.get(3))
     frame_height = 1080#int(cap.get(4))
