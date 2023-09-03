@@ -130,7 +130,6 @@ def send_mp4(call, mp4_path):
     bot.send_message(chat_id, f'Wait for a few minutes you will be sent a video clip: {mp4_path.split("/")[-1]}')
     try:
         video_paths = split_video(mp4_path, "output_parts")
-        print(video_paths)
         for video in video_paths:
             if os.path.exists(video):
                 with open(video, 'rb') as part_video:
