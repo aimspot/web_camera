@@ -21,6 +21,7 @@ def find_folders_in_current_directory(folder_names):
             folder_paths.append(item_path)
     return folder_paths
 
+
 def get_all_files_in_directory(directory_path):
     file_paths = []
     for root, directories, files in os.walk(directory_path):
