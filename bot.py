@@ -127,16 +127,17 @@ def handle_button_click(call):
 
 def send_mp4(call, mp4_path):
     chat_id = call.message.chat.id
+    output_path = f'output_parts_{chat_id}'
     bot.send_message(chat_id, f'Wait for a few minutes you will be sent a video clip: {mp4_path.split("/")[-1]}')
     try:
-        video_paths = split_video(mp4_path, "output_parts")
+        video_paths = split_video(mp4_path, output_path)
         for video in video_paths:
             if os.path.exists(video):
                 with open(video, 'rb') as part_video:
                     bot.send_video(chat_id, part_video)
             else:
                 bot.send_message(chat_id, "MP4 file not found.")
-        shutil.rmtree("output_parts")
+        shutil.rmtree(output_path)
     except:
         bot.send_message(chat_id, "Try later, video in process recording.")
 
@@ -176,7 +177,25 @@ def create_buttons_video(files_path, call):
     for button in buttons:
         markup.row(button)
     bot.send_message(call.message.chat.id, "Choose video:", reply_markup=markup)
+
+def delete_files_and_folders():
+    files_to_delete = ["DISCONECT camera №1.txt", "DISCONECT camera №2.txt"]
+    cur_path = os.getcwd()
+    
+    # Перебираем файлы и папки в папке folder_path
+    for root, dirs, files in os.walk(cur_path):
+        for file in files:
+            if file in files_to_delete:
+                file_path = os.path.join(root, file)
+                os.remove(file_path)
+                print(f"Delete file: {file_path}")
+        for directory in dirs:
+            if directory.startswith("output_parts_"):
+                dir_path = os.path.join(root, directory)
+                os.rmdir(dir_path)
+                print(f"Delete folder: {dir_path}")
         
 
 if __name__ == "__main__":
+    delete_files_and_folders()
     bot.polling(none_stop=True)
