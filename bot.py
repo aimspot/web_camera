@@ -45,7 +45,7 @@ class FileHandler(FileSystemEventHandler):
 event_handler = FileHandler()
 
 observer = Observer()
-observer.schedule(event_handler, path='.')
+observer.schedule(event_handler, path='/') #path='.'
 observer.start()
 
 @bot.message_handler(commands=['start'])
