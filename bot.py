@@ -1,6 +1,6 @@
 import telebot
 from telebot import types
-from data import get_all_folders_in_directory, find_folders_in_current_directory, get_all_files_in_directory, split_video
+from data import get_all_folders_in_directory, find_folders_in_current_directory, get_all_files_in_directory, split_video, count_pep_unit_folders
 import os
 import shutil
 from watchdog.observers import Observer
@@ -10,6 +10,8 @@ from watchdog.events import FileSystemEventHandler
 folders_date = list()
 folders_hour = list()
 files_path = list()
+
+users_request = dict()
 
 target_folder_camera = ["camera №1", "camera №2"]
 target_callback_camera = ['camera1_pressed', 'camera2_pressed']
@@ -22,7 +24,8 @@ target_callback_hour = ['hour1_pressed', 'hour2_pressed', 'hour3_pressed', 'hour
 
 target_callback_video = ['video1_pressed', 'video2_pressed', 'video3_pressed', 'video4_pressed', 'video5_pressed', 'video6_pressed', 'video7_pressed', 'video8_pressed', 'video9_pressed', 'video10_pressed', 'video11_pressed', 'video12_pressed']
 
-bot = telebot.TeleBot('YOUT TOKEN')
+#bot = telebot.TeleBot('YOUT TOKEN')
+bot = telebot.TeleBot('6217984784:AAHUbTc_NX2N5tUIZrqMzbKl_9Twgu3r_Uw')
 
 users = []
 
@@ -45,7 +48,8 @@ class FileHandler(FileSystemEventHandler):
 event_handler = FileHandler()
 
 observer = Observer()
-observer.schedule(event_handler, path='/') #path='.'
+path_error = os.getcwd()
+observer.schedule(event_handler, path=path_error) #path='/' path='.'
 observer.start()
 
 @bot.message_handler(commands=['start'])
@@ -125,15 +129,19 @@ def handle_button_click(call):
             send_mp4(call, files_path[i])
 
 
+
 def send_mp4(call, mp4_path):
     chat_id = call.message.chat.id
     output_path = f'output_parts_{chat_id}'
+    count = count_pep_unit_folders(output_path)
+    output_path = f'{output_path}_{count}'
     bot.send_message(chat_id, f'Wait for a few minutes you will be sent a video clip: {mp4_path.split("/")[-1]}')
     try:
         video_paths = split_video(mp4_path, output_path)
-        for video in video_paths:
+        for i, video in enumerate(video_paths):
             if os.path.exists(video):
                 with open(video, 'rb') as part_video:
+                    bot.send_message(chat_id, f'Video clip day {mp4_path.split("/")[-3]}, hours {mp4_path.split("/")[-2]}, minutes {mp4_path.split("/")[-1]} _part{i}')
                     bot.send_video(chat_id, part_video)
             else:
                 bot.send_message(chat_id, "MP4 file not found.")
@@ -188,12 +196,12 @@ def delete_files_and_folders():
             if file in files_to_delete:
                 file_path = os.path.join(root, file)
                 os.remove(file_path)
-                print(f"Delete file: {file_path}")
+                #print(f"Delete file: {file_path}")
         for directory in dirs:
             if directory.startswith("output_parts_"):
                 dir_path = os.path.join(root, directory)
                 os.rmdir(dir_path)
-                print(f"Delete folder: {dir_path}")
+                #print(f"Delete folder: {dir_path}")
         
 
 if __name__ == "__main__":

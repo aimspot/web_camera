@@ -47,6 +47,20 @@ def split_video(input_video_path, output_dir, max_size_mb=49):
         path_split_video.append(os.path.join(output_dir, f'part_{i + 1}.mp4'))
     return path_split_video
 
+
+def count_pep_unit_folders(out_path):
+    count = 0
+    cur_path = os.getcwd()
+
+    directory_contents = os.listdir(cur_path)
+
+    for item in directory_contents:
+        item_path = os.path.join(cur_path, item)
+        
+        if os.path.isdir(item_path) and item.startswith(out_path):
+            count += 1
+    return count
+
 # if __name__ == "__main__":
 #     input_video_path = "/Users/misha/Desktop/GitHub/web_camera/camera №1/03_09_2023/14/05-09.mp4"
 #     output_dir = "output_parts"

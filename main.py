@@ -6,7 +6,7 @@ import argparse
 from loguru import logger
 import shutil 
 
-cameras_url = ['rtsp://admin:1q2w3e4r@192.168.20.100/Streaming/Channels/101', 'rtsp://admin:1q2w3e4r@192.168.20.98/Streaming/Channels/101'] 
+cameras_url = ['rtsp://admin:1q2w3e4r@192.168.20.100/Streaming/Channels/101', 'rtsp://admin:1q2w3e4r@192.168.20.99/Streaming/Channels/101'] 
 
 def opt(): 
     parser = argparse.ArgumentParser() 
@@ -27,6 +27,17 @@ def delete_old_folders(base_path):
                     logger.debug(f"Deleting folder: {folder_path}")
         except ValueError:
             pass
+
+def delete_files():
+    files_to_delete = ["DISCONECT camera №1.txt", "DISCONECT camera №2.txt"]
+    cur_path = os.getcwd()
+    
+    # Перебираем файлы и папки в папке folder_path
+    for root, dirs, files in os.walk(cur_path):
+        for file in files:
+            if file in files_to_delete:
+                file_path = os.path.join(root, file)
+                os.remove(file_path)
 
 
 def get_names_folders(path_root_folder): 
@@ -78,6 +89,8 @@ def main(opt):
                     file.write("")
             except Exception as e:
                 pass
+            time.sleep(3)
+            #delete_files()
             cap = cv2.VideoCapture(cameras_url[opt.camera - 1])
             
         
