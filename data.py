@@ -60,9 +60,3 @@ def count_pep_unit_folders(out_path):
         if os.path.isdir(item_path) and item.startswith(out_path):
             count += 1
     return count
-
-# if __name__ == "__main__":
-#     input_video_path = "/Users/misha/Desktop/GitHub/web_camera/camera №1/03_09_2023/14/05-09.mp4"
-#     output_dir = "output_parts"
-#     # max_size_mb = 49
-#     split_video(input_video_path, output_dir)

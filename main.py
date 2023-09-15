@@ -15,7 +15,7 @@ def opt():
 
 
 def delete_old_folders(base_path):
-    days_threshold = 8
+    days_threshold = 7
     today = datetime.now()
     for folder_name in os.listdir(base_path):
         try:
@@ -75,7 +75,7 @@ def main(opt):
 
     frame_width = 1920#int(cap.get(3))
     frame_height = 1080#int(cap.get(4))
-    fps = 25
+    fps = 20
     output_file = f'{minute_video}.mp4'
     fourcc = cv2.VideoWriter_fourcc('m', 'p', '4', 'v')
     out = cv2.VideoWriter(output_file, fourcc, fps, (frame_width, frame_height))

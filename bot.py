@@ -16,7 +16,7 @@ users_request = dict()
 target_folder_camera = ["camera №1", "camera №2"]
 target_callback_camera = ['camera1_pressed', 'camera2_pressed']
 
-target_callback_date = ['date1_pressed', 'date2_pressed', 'date3_pressed', 'date4_pressed', 'date5_pressed', 'date6_pressed', 'date7_pressed']
+target_callback_date = ['date1_pressed', 'date2_pressed', 'date3_pressed', 'date4_pressed', 'date5_pressed', 'date6_pressed', 'date7_pressed', 'date8_pressed']
 
 target_callback_hour = ['hour1_pressed', 'hour2_pressed', 'hour3_pressed', 'hour4_pressed', 'hour5_pressed', 'hour6_pressed', 'hour7_pressed',
                         'hour8_pressed', 'hour9_pressed', 'hour10_pressed', 'hour11_pressed', 'hour12_pressed', 'hour13_pressed', 'hour14_pressed',
@@ -90,6 +90,7 @@ def handle_button_click(call):
     global folders_date
     global folders_hour
     global files_path
+    delete_files()
     user_id = call.message.chat.id
     if user_id not in users:
         users.append(user_id)
@@ -160,7 +161,7 @@ def create_buttons_date(folders_date, call):
         buttons.append(button)
     for button in buttons:
         markup.row(button)
-    bot.send_message(call.message.chat.id, "Choose date:", reply_markup=markup)
+    bot.send_message(call.message.chat.id, "Date:", reply_markup=markup)
 
 
 def create_buttons_hour(folders_hour, call):
@@ -172,7 +173,7 @@ def create_buttons_hour(folders_hour, call):
         buttons.append(button)
     for button in buttons:
         markup.row(button)
-    bot.send_message(call.message.chat.id, "Choose hour:", reply_markup=markup)
+    bot.send_message(call.message.chat.id, "Hours:", reply_markup=markup)
 
 
 def create_buttons_video(files_path, call):
@@ -184,9 +185,9 @@ def create_buttons_video(files_path, call):
         buttons.append(button)
     for button in buttons:
         markup.row(button)
-    bot.send_message(call.message.chat.id, "Choose video:", reply_markup=markup)
+    bot.send_message(call.message.chat.id, "Minutes:", reply_markup=markup)
 
-def delete_files_and_folders():
+def delete_files():
     files_to_delete = ["DISCONECT camera №1.txt", "DISCONECT camera №2.txt"]
     cur_path = os.getcwd()
     
@@ -197,13 +198,17 @@ def delete_files_and_folders():
                 file_path = os.path.join(root, file)
                 os.remove(file_path)
                 #print(f"Delete file: {file_path}")
-        for directory in dirs:
+
+def delete_folders():
+    cur_path = os.getcwd()
+    for root, dirs, files in os.walk(cur_path):
+         for directory in dirs:
             if directory.startswith("output_parts_"):
                 dir_path = os.path.join(root, directory)
                 os.rmdir(dir_path)
-                #print(f"Delete folder: {dir_path}")
         
 
 if __name__ == "__main__":
-    delete_files_and_folders()
+    delete_files()
+    delete_folders()
     bot.polling(none_stop=True)
