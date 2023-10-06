@@ -8,6 +8,10 @@ import shutil
 
 cameras_url = ['rtsp://admin:1q2w3e4r@192.168.20.100/Streaming/Channels/101', 'rtsp://admin:1q2w3e4r@192.168.20.99/Streaming/Channels/101'] 
 
+stateDisconect = False
+stateConnection = True
+
+
 def opt(): 
     parser = argparse.ArgumentParser() 
     parser.add_argument('--camera', type=int, default=1, help='№ camera [1, 2]') 
@@ -65,6 +69,8 @@ def create_directory(path):
 
 
 def main(opt):
+    global stateDisconect
+    global stateConnection
     path_root_folder = f'camera №{opt.camera}' 
     date_folder, time_folder, minute_video, past_time = get_names_folders(path_root_folder)
     create_directory(date_folder)
@@ -83,15 +89,19 @@ def main(opt):
     logger.info("Recording video")
     while True:
         if not cap.isOpened():
-            logger.debug("Не удалось открыть камеру.")
-            try:
-                with open(f'DISCONECT camera №{opt.camera}.txt', "w") as file:
-                    file.write("")
-            except Exception as e:
-                pass
+            if not stateDisconect:
+                stateConnection = False
+                logger.debug("Не удалось открыть камеру.")
+                try:
+                    with open(f'DISCONECT camera №{opt.camera}.txt', "w") as file:
+                        file.write("")
+                except Exception as e:
+                    pass
+                stateDisconect = True
             time.sleep(3)
-            #delete_files()
             cap = cv2.VideoCapture(cameras_url[opt.camera - 1])
+        else:
+            stateDisconect = False
             
         
         date_folder, time_folder, minute_video, end_time = get_names_folders(path_root_folder)
@@ -114,6 +124,14 @@ def main(opt):
                 cap.release() 
                 continue
             else:
+                if not stateConnection:
+                    stateConnection = True
+                    try:
+                        with open(f'Camera №{opt.camera} is ready.txt', "w") as file:
+                            file.write("")
+                    except Exception as e:
+                        pass
+
                 out.write(frame)
         except: 
             cap.release() 

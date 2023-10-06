@@ -30,7 +30,7 @@ bot = telebot.TeleBot('6217984784:AAHUbTc_NX2N5tUIZrqMzbKl_9Twgu3r_Uw')
 users = []
 
 
-cameras_disconect = ['DISCONECT camera №1.txt','DISCONECT camera №2.txt']
+cameras_disconect = ['DISCONECT camera №1.txt','DISCONECT camera №2.txt', 'Camera №1 is ready.txt', 'Camera №2 is ready.txt']
 
 def send_notification(filename):
     for chat_id in users:
@@ -188,7 +188,7 @@ def create_buttons_video(files_path, call):
     bot.send_message(call.message.chat.id, "Minutes:", reply_markup=markup)
 
 def delete_files():
-    files_to_delete = ["DISCONECT camera №1.txt", "DISCONECT camera №2.txt"]
+    files_to_delete = ["DISCONECT camera №1.txt", "DISCONECT camera №2.txt", "Camera №1 is ready.txt", "Camera №2 is ready.txt"]
     cur_path = os.getcwd()
     
     # Перебираем файлы и папки в папке folder_path
