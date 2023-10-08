@@ -34,7 +34,7 @@ cameras_disconect = ['DISCONECT camera №1.txt','DISCONECT camera №2.txt', 'C
 
 def send_notification(filename):
     for chat_id in users:
-        bot.send_message(chat_id, f"{filename.split('.')[0]}'")
+        bot.send_message(chat_id, f"{filename.split('.')[0]}")
         os.remove(filename)
 
 

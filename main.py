@@ -6,7 +6,8 @@ import argparse
 from loguru import logger
 import shutil 
 
-cameras_url = ['rtsp://admin:1q2w3e4r@192.168.20.100/Streaming/Channels/101', 'rtsp://admin:1q2w3e4r@192.168.20.99/Streaming/Channels/101'] 
+
+cameras_url = ['rtsp://admin:1q2w3e4r@192.168.20.100/Streaming/Channels/101',0] #'rtsp://admin:1q2w3e4r@192.168.20.99/Streaming/Channels/101'] 
 
 stateDisconect = False
 stateConnection = True
@@ -91,14 +92,14 @@ def main(opt):
         if not cap.isOpened():
             if not stateDisconect:
                 stateConnection = False
-                logger.debug("Не удалось открыть камеру.")
+                logger.debug(f"Не удалось открыть камеру №{opt.camera}.")
                 try:
                     with open(f'DISCONECT camera №{opt.camera}.txt', "w") as file:
                         file.write("")
                 except Exception as e:
                     pass
                 stateDisconect = True
-            time.sleep(3)
+            time.sleep(1)
             cap = cv2.VideoCapture(cameras_url[opt.camera - 1])
         else:
             stateDisconect = False
@@ -120,12 +121,14 @@ def main(opt):
 
         try:
             ret, frame = cap.read() 
-            if not ret: 
+            if not ret:
                 cap.release() 
                 continue
             else:
                 if not stateConnection:
+                    stateDisconect = False
                     stateConnection = True
+                    logger.debug(f"Удалось открыть камеру №{opt.camera}.")
                     try:
                         with open(f'Camera №{opt.camera} is ready.txt', "w") as file:
                             file.write("")
