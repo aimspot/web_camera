@@ -7,7 +7,7 @@ from loguru import logger
 import shutil 
 
 
-cameras_url = ['rtsp://admin:1q2w3e4r@192.168.20.100/Streaming/Channels/101',0] #'rtsp://admin:1q2w3e4r@192.168.20.99/Streaming/Channels/101'] 
+cameras_url = ['rtsp://admin:1q2w3e4r@192.168.20.100/Streaming/Channels/101', 'rtsp://admin:1q2w3e4r@192.168.20.99/Streaming/Channels/101'] 
 
 stateDisconect = False
 stateConnection = True
