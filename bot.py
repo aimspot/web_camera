@@ -25,7 +25,6 @@ target_callback_hour = ['hour1_pressed', 'hour2_pressed', 'hour3_pressed', 'hour
 target_callback_video = ['video1_pressed', 'video2_pressed', 'video3_pressed', 'video4_pressed', 'video5_pressed', 'video6_pressed', 'video7_pressed', 'video8_pressed', 'video9_pressed', 'video10_pressed', 'video11_pressed', 'video12_pressed']
 
 #bot = telebot.TeleBot('YOUT TOKEN')
-bot = telebot.TeleBot('6217984784:AAHUbTc_NX2N5tUIZrqMzbKl_9Twgu3r_Uw')
 
 users = []
 
